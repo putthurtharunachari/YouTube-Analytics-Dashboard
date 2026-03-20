@@ -1,0 +1,50 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Backend
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.env
+.gitenv
+.venv/
+
+# Database and Data Files
+*.db
+*.sqlite3
+*.csv
+*.xlsx
+*.pdf
+*.json
+
+# Testing and Reports
+pytest_report.txt
+flake8_report.txt
+report.xml
+.pytest_cache/
+coverage.xml
+htmlcov/
