@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "@/config";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
@@ -44,7 +45,7 @@ export default function Comparison() {
 
     useEffect(() => {
         // Fetch recent channels for selection
-        axios.get("http://localhost:8001/api/channels/recent")
+        axios.get(`${API_BASE_URL}/api/channels/recent`)
             .then(res => {
                 if (res.data.status === "success") setRecentChannels(res.data.data);
             });
@@ -74,8 +75,8 @@ export default function Comparison() {
         try {
             const ids = selectedIds.join(",");
             const [compRes, trendRes] = await Promise.all([
-                axios.get(`http://localhost:8001/api/analytics/compare?channel_ids=${ids}`),
-                axios.get(`http://localhost:8001/api/analytics/compare/trends?channel_ids=${ids}`)
+                axios.get(`${API_BASE_URL}/api/analytics/compare?channel_ids=${ids}`),
+                axios.get(`${API_BASE_URL}/api/analytics/compare/trends?channel_ids=${ids}`)
             ]);
 
             if (compRes.data.status === "success") {
@@ -97,7 +98,7 @@ export default function Comparison() {
     const fetchLeaderboard = async (metric) => {
         setActiveMetric(metric);
         try {
-            const res = await axios.get(`http://localhost:8001/api/analytics/leaderboard?metric=${metric}`);
+            const res = await axios.get(`${API_BASE_URL}/api/analytics/leaderboard?metric=${metric}`);
             if (res.data.status === "success") setLeaderboard(res.data.data);
         } catch (error) {
             console.error("Leaderboard fetch failed", error);
@@ -106,7 +107,7 @@ export default function Comparison() {
 
     const fetchBenchmark = async (id) => {
         try {
-            const res = await axios.get(`http://localhost:8001/api/analytics/benchmark/${id}`);
+            const res = await axios.get(`${API_BASE_URL}/api/analytics/benchmark/${id}`);
             if (res.data.status === "success") setBenchmark(res.data.data);
         } catch (error) {
             console.error("Benchmark fetch failed", error);
@@ -122,7 +123,7 @@ export default function Comparison() {
     };
 
     const handleExport = (id) => {
-        window.open(`http://localhost:8001/api/analytics/export?channel_id=${id}&format=csv`);
+        window.open(`${API_BASE_URL}/api/analytics/export?channel_id=${id}&format=csv`);
     };
 
     const colors = ["#00d2ff", "#ff006e", "#38bdf8"];
@@ -160,13 +161,13 @@ export default function Comparison() {
                     {selectedIds.length > 1 && (
                         <div className="flex bg-secondary/50 rounded-xl p-1 border border-border">
                             <button
-                                onClick={() => window.open(`http://localhost:8001/api/analytics/compare/export?channel_ids=${selectedIds.join(",")}&format=pdf`)}
+                                onClick={() => window.open(`${API_BASE_URL}/api/analytics/compare/export?channel_ids=${selectedIds.join(",")}&format=pdf`)}
                                 className="px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-2"
                             >
                                 <Download className="w-3 h-3" /> Combined PDF
                             </button>
                             <button
-                                onClick={() => window.open(`http://localhost:8001/api/analytics/compare/export?channel_ids=${selectedIds.join(",")}&format=csv`)}
+                                onClick={() => window.open(`${API_BASE_URL}/api/analytics/compare/export?channel_ids=${selectedIds.join(",")}&format=csv`)}
                                 className="px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-primary hover:text-white transition-all flex items-center gap-2"
                             >
                                 <Download className="w-3 h-3" /> Combined CSV

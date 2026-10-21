@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "@/config";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Users, Eye, Video, ThumbsUp, MessageCircle, Clock, Loader2, AlertCircle, FileText, Download } from "lucide-react";
@@ -52,7 +53,7 @@ export default function Dashboard() {
         const fetchAnalytics = async () => {
             setLoading(true);
             try {
-                const res = await axios.get(`http://localhost:8001/api/analytics/${channelId}/dashboard?time_range=${timeRange}`);
+                const res = await axios.get(`${API_BASE_URL}/api/analytics/${channelId}/dashboard?time_range=${timeRange}`);
                 if (res.data.status === 'success') {
                     setData(res.data.data);
                 } else {
@@ -105,13 +106,13 @@ export default function Dashboard() {
                 </div>
                 <div className="flex gap-3">
                     <button
-                        onClick={() => window.open(`http://localhost:8001/api/analytics/export?channel_id=${localStorage.getItem('selectedChannel')}&format=pdf`, '_blank')}
+                        onClick={() => window.open(`${API_BASE_URL}/api/analytics/export?channel_id=${localStorage.getItem('selectedChannel')}&format=pdf`, '_blank')}
                         className="btn-secondary px-4 py-2 text-xs flex items-center gap-2"
                     >
                         <FileText className="w-4 h-4" /> PDF Report
                     </button>
                     <button
-                        onClick={() => window.open(`http://localhost:8001/api/analytics/export?channel_id=${localStorage.getItem('selectedChannel')}&format=xlsx`, '_blank')}
+                        onClick={() => window.open(`${API_BASE_URL}/api/analytics/export?channel_id=${localStorage.getItem('selectedChannel')}&format=xlsx`, '_blank')}
                         className="btn-secondary px-4 py-2 text-xs flex items-center gap-2"
                     >
                         <Download className="w-4 h-4" /> Excel Data

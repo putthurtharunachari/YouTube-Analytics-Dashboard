@@ -2,8 +2,9 @@
 Main entry point for the FastAPI backend.
 Sets up the application, global exception handlers, CORS, and binds analytics routers.
 """
-from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks
+from fastapi import FastAPI, Depends, HTTPException, BackgroundTasks, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from datetime import datetime
 
@@ -21,20 +22,21 @@ def validate_channel_id(channel_id: str):
         raise HTTPException(status_code=400, detail="Please enter a valid YouTube channel ID.")
 
 
-# Create DB Tables
-Base.metadata.create_all(bind=engine)
+# Create DB Tables safely
+try:
+    Base.metadata.create_all(bind=engine)
+    logger.info("Database schema initialized successfully.")
+except Exception as db_err:
+    logger.error(f"Failed to create database tables: {db_err}")
 
 app = FastAPI(title="YouTube Analytics API")
 app.include_router(analytics_router)
 
-from fastapi import Request
-from fastapi.responses import JSONResponse
-
-# Configure CORS for React frontend (Vite defaults to port 5173)
+# Configure CORS for React frontend (allows localhost, Render, Vercel, and custom domains)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -54,7 +56,12 @@ async def global_exception_handler(request: Request, exc: Exception):
 @app.get("/")
 def read_root():
     """ Health check endpoint to verify backend API is online. """
-    return {"message": "Welcome to YouTube Analytics API. Engine is running."}
+    return {"status": "ok", "message": "YouTube Analytics API is live and running."}
+
+@app.get("/health")
+def health_check():
+    """ Health check endpoint. """
+    return {"status": "healthy"}
 
 @app.post("/api/extract/channel/{channel_id}")
 async def extract_channel(channel_id: str, db: Session = Depends(get_db)):

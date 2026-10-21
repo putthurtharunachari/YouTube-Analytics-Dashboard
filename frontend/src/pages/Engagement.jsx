@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "@/config";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Filter, Loader2, AlertCircle } from "lucide-react";
@@ -52,7 +53,7 @@ export default function Engagement() {
         const fetchAnalytics = async () => {
             setLoading(true);
             try {
-                const res = await axios.get(`http://localhost:8001/api/analytics/${channelId}/engagement`);
+                const res = await axios.get(`${API_BASE_URL}/api/analytics/${channelId}/engagement`);
                 if (res.data.status === 'success') {
                     setData(res.data.data);
                 } else {

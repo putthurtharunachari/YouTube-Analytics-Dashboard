@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "@/config";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
@@ -40,7 +41,7 @@ export default function ReportBuilder() {
 
     const fetchTemplates = async () => {
         try {
-            const res = await axios.get(`http://localhost:8001/api/analytics/report/templates/${channelId}`);
+            const res = await axios.get(`${API_BASE_URL}/api/analytics/report/templates/${channelId}`);
             if (res.data.status === 'success') setTemplates(res.data.data);
         } catch (err) {
             console.error("Failed to fetch templates", err);
@@ -60,7 +61,7 @@ export default function ReportBuilder() {
         try {
             // For custom report, we use the new /report/custom endpoint
             const res = await axios.post(
-                `http://localhost:8001/api/analytics/report/custom?channel_id=${channelId}&format=${format}`,
+                `${API_BASE_URL}/api/analytics/report/custom?channel_id=${channelId}&format=${format}`,
                 selectedModules,
                 { responseType: 'blob' }
             );
@@ -85,7 +86,7 @@ export default function ReportBuilder() {
     const saveTemplate = async () => {
         if (!templateName) return setError("Please provide a template name.");
         try {
-            const res = await axios.post(`http://localhost:8001/api/analytics/report/templates?name=${templateName}&channel_id=${channelId}&config=${JSON.stringify(selectedModules)}`);
+            const res = await axios.post(`${API_BASE_URL}/api/analytics/report/templates?name=${templateName}&channel_id=${channelId}&config=${JSON.stringify(selectedModules)}`);
             if (res.data.status === 'success') {
                 setSuccess("Template saved!");
                 setTemplateName("");
@@ -111,7 +112,7 @@ export default function ReportBuilder() {
     const deleteTemplate = async (id) => {
         if (window.confirm("Are you sure you want to delete this template? This action cannot be undone.")) {
             try {
-                await axios.delete(`http://localhost:8001/api/analytics/report/templates/${id}`);
+                await axios.delete(`${API_BASE_URL}/api/analytics/report/templates/${id}`);
                 fetchTemplates();
             } catch (err) {
                 setError("Failed to delete template.");

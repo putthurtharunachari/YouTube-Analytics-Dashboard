@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "@/config";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
@@ -54,7 +55,7 @@ export default function Videos() {
             if (engRange) params.append("eng_range", engRange);
             if (durationRange) params.append("duration_range", durationRange);
 
-            const res = await axios.get(`http://localhost:8001/api/analytics/${channelId}/videos/filter?${params.toString()}`);
+            const res = await axios.get(`${API_BASE_URL}/api/analytics/${channelId}/videos/filter?${params.toString()}`);
             if (res.data.status === 'success') {
                 setData(res.data.data);
             } else {
@@ -120,13 +121,13 @@ export default function Videos() {
                 </div>
                 <div className="flex gap-3">
                     <button
-                        onClick={() => window.open(`http://localhost:8001/api/analytics/export?channel_id=${channelId}&format=pdf`, '_blank')}
+                        onClick={() => window.open(`${API_BASE_URL}/api/analytics/export?channel_id=${channelId}&format=pdf`, '_blank')}
                         className="btn-secondary px-4 py-2 text-xs flex items-center gap-2"
                     >
                         <FileText className="w-4 h-4" /> PDF Report
                     </button>
                     <button
-                        onClick={() => window.open(`http://localhost:8001/api/analytics/export?channel_id=${channelId}&format=xlsx`, '_blank')}
+                        onClick={() => window.open(`${API_BASE_URL}/api/analytics/export?channel_id=${channelId}&format=xlsx`, '_blank')}
                         className="btn-secondary px-4 py-2 text-xs flex items-center gap-2"
                     >
                         <Download className="w-4 h-4" /> Excel Data

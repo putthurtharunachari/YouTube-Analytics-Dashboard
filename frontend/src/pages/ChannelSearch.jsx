@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "@/config";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Users, Eye, Video, ThumbsUp, Calendar, ExternalLink, Loader2 } from "lucide-react";
@@ -25,7 +26,7 @@ export default function ChannelSearch() {
     const [recentChannels, setRecentChannels] = useState([]);
 
     useEffect(() => {
-        axios.get("http://localhost:8001/api/channels/recent")
+        axios.get(`${API_BASE_URL}/api/channels/recent`)
             .then(res => {
                 if (res.data.status === "success") setRecentChannels(res.data.data);
             })
@@ -49,7 +50,7 @@ export default function ChannelSearch() {
 
         try {
             // Step 1: Call Python FastAPI backend for Channel Info
-            const response = await axios.post(`http://localhost:8001/api/extract/channel/${parsed.data}`);
+            const response = await axios.post(`${API_BASE_URL}/api/extract/channel/${parsed.data}`);
 
             if (response.data.status === "success" && response.data.data) {
                 const apiData = response.data.data;
@@ -77,12 +78,12 @@ export default function ChannelSearch() {
 
                 // Step 2: Fetch and store Videos securely, pass the DB ID
                 setLoadingStatus("Scanning all Video metadata to calculate Engagement...");
-                const videoRes = await axios.post(`http://localhost:8001/api/extract/videos/${parsed.data}?db_id=${dbId}`);
+                const videoRes = await axios.post(`${API_BASE_URL}/api/extract/videos/${parsed.data}?db_id=${dbId}`);
 
                 setSuccessMsg(videoRes.data.message);
 
                 // Optional: Update recent channels list after new fetch
-                axios.get("http://localhost:8001/api/channels/recent")
+                axios.get(`${API_BASE_URL}/api/channels/recent`)
                     .then(res => setRecentChannels(res.data.data));
             } else {
                 setError("Failed to parse valid channel data from API.");
