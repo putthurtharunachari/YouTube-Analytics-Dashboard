@@ -40,6 +40,12 @@ env/
 *.xlsx
 *.pdf
 *.json
+!package.json
+!package-lock.json
+!vercel.json
+!frontend/package.json
+!frontend/package-lock.json
+!frontend/vercel.json
 
 # Testing and Reports
 pytest_report.txt
