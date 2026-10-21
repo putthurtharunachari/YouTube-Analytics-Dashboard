@@ -93,7 +93,7 @@ export default function ChannelSearch() {
             if (err.response && err.response.data && err.response.data.detail) {
                 setError(`API Error: ${err.response.data.detail}`);
             } else {
-                setError("Failed to connect to the backend server. Is it running on port 8001?");
+                setError(`Connection Error: ${err.message || "Failed to reach backend"}. (Connecting to: ${API_BASE_URL})`);
             }
         } finally {
             setLoading(false);

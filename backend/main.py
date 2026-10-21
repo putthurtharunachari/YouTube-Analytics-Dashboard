@@ -97,7 +97,7 @@ async def extract_channel(channel_id: str, db: Session = Depends(get_db)):
         raise he
     except Exception as e:
         logger.error(f"Error extracting channel {channel_id}: {str(e)}")
-        error_msg = str(e) if "YouTube API" in str(e) or "Channel Extraction Failed" in str(e) else "An unexpected error occurred while extracting channel info."
+        error_msg = str(e) if str(e) else "An unexpected error occurred while extracting channel info."
         raise HTTPException(status_code=400, detail=error_msg)
 
 @app.post("/api/extract/videos/{channel_id}")
