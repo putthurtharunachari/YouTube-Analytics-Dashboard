@@ -70,6 +70,14 @@ async def extract_channel(channel_id: str, db: Session = Depends(get_db)):
         validate_channel_id(channel_id)
         logger.info(f"Extracting channel info for {channel_id}")
         channel_data = extract_channel_info(channel_id)
+        if hasattr(channel_data.get("published_at"), "to_pydatetime"):
+            channel_data["published_at"] = channel_data["published_at"].to_pydatetime()
+        elif isinstance(channel_data.get("published_at"), str):
+            try:
+                import pandas as pd
+                channel_data["published_at"] = pd.to_datetime(channel_data["published_at"]).to_pydatetime()
+            except Exception:
+                pass
         
         db_channel = db.query(models.Channel).filter(models.Channel.channel_id == channel_id).first()
         if not db_channel:
@@ -127,13 +135,35 @@ def process_videos(youtube_channel_id: str, db_channel_id: int, db: Session):
         processed_count = 0
         
         for v_data in videos_data:
+            # Ensure published_at is a native datetime object for SQLite / MySQL compatibility
+
+            pub_at = v_data.get("published_at")
+
+            if hasattr(pub_at, "to_pydatetime"):
+
+                pub_at = pub_at.to_pydatetime()
+
+            elif isinstance(pub_at, str):
+
+                try:
+
+                    import pandas as pd
+
+                    pub_at = pd.to_datetime(pub_at).to_pydatetime()
+
+                except Exception:
+
+                    pass
+
+
             # Separate Statistics from core Video data
+
             video_core_data = {
                 "video_id": v_data["video_id"],
                 "channel_id": db_channel_id,
                 "title": v_data["title"],
                 "description": v_data["description"],
-                "published_at": v_data["published_at"],
+                "published_at": pub_at,
                 "duration": v_data["duration"],
                 "duration_sec": v_data.get("duration_sec", 0),
                 "thumbnail": v_data["thumbnail"]

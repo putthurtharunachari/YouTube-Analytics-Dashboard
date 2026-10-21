@@ -106,7 +106,7 @@ def extract_video_metadata(channel_id: str) -> list[dict]:
         df = pd.DataFrame(videos_metadata)
         
         # Ensure correct datatypes including MySQL compatible DATETIME
-        df['published_at'] = pd.to_datetime(df['published_at']).dt.strftime('%Y-%m-%d %H:%M:%S')
+        df['published_at'] = pd.to_datetime(df['published_at'])
         df['view_count'] = pd.to_numeric(df['view_count'], errors='coerce').fillna(0).astype('int64')
         df['like_count'] = pd.to_numeric(df['like_count'], errors='coerce').fillna(0).astype('int64')
         df['comment_count'] = pd.to_numeric(df['comment_count'], errors='coerce').fillna(0).astype('int64')

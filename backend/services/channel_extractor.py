@@ -39,8 +39,11 @@ def extract_channel_info(channel_id: str) -> dict:
         # Convert to pandas DataFrame to satisfy prompt requirement, 
         # but return dict for easier database ORM parsing in FastAPI
         df = pd.DataFrame([structured_data])
-        df['published_at'] = pd.to_datetime(df['published_at']).dt.strftime('%Y-%m-%d %H:%M:%S')
-        return df.to_dict(orient='records')[0]
+        df['published_at'] = pd.to_datetime(df['published_at'])
+        channel_record = df.to_dict(orient='records')[0]
+        if hasattr(channel_record.get('published_at'), 'to_pydatetime'):
+            channel_record['published_at'] = channel_record['published_at'].to_pydatetime()
+        return channel_record
 
     except HttpError as e:
         logger.error(f"YouTube Channel API Error: {e}")
